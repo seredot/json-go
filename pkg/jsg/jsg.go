@@ -7,16 +7,14 @@ import (
 // NewObject returns a new json-go node with object type.
 func NewObject() Node {
 	return &node{
-		nodeType: Object,
-		value:    array{},
+		value: object{},
 	}
 }
 
 // NewArray returns a new json-go node with array type.
 func NewArray() Node {
 	return &node{
-		nodeType: Array,
-		value:    object{},
+		value: array{},
 	}
 }
 
@@ -29,13 +27,29 @@ func New(jsonBytes []byte) (Node, error) {
 	}
 
 	return &node{
-		nodeType: Object,
-		value:    value,
+		value: value,
 	}, nil
 }
 
 func (n node) Type() Type {
-	return n.nodeType
+	switch n.value.(type) {
+	case nil:
+		return Null
+	case string:
+		return String
+	case float64:
+		return Number
+	case bool:
+		return Boolean
+	case object:
+		return Object
+	case array:
+		return Array
+	case error:
+		return Error
+	}
+
+	return Undefined
 }
 
 func (n node) Get(p interface{}) Node {

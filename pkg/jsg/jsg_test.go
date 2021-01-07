@@ -17,13 +17,13 @@ func TestJSONObject(t *testing.T) {
 	assert.NilError(t, err)
 
 	// String value
-	assert.Equal(t, "foo", object.Get("string").String())
+	assert.Equal(t, "foo", object.Get("string").Str())
 
 	// Number value
-	assert.Equal(t, 123.4, object.Get("number").Number())
+	assert.Equal(t, 123.4, object.Get("number").Num())
 
 	// Boolean value
-	assert.Equal(t, true, object.Get("boolean").Boolean())
+	assert.Equal(t, true, object.Get("boolean").Bool())
 }
 
 func TestJSONArray(t *testing.T) {
@@ -35,9 +35,9 @@ func TestJSONArray(t *testing.T) {
 	assert.NilError(t, err)
 
 	// Item values
-	assert.Equal(t, 1.0, array.Get(0).Number())
-	assert.Equal(t, 2.0, array.Get(1).Number())
-	assert.Equal(t, 3.0, array.Get(2).Number())
+	assert.Equal(t, 1.0, array.Get(0).Num())
+	assert.Equal(t, 2.0, array.Get(1).Num())
+	assert.Equal(t, 3.0, array.Get(2).Num())
 
 	// Array length
 	assert.Equal(t, 3, array.Len())
@@ -50,8 +50,8 @@ func TestJSONArray(t *testing.T) {
 	assert.NilError(t, err)
 
 	// Item values
-	assert.Equal(t, "a", array.Get(0).String())
-	assert.Equal(t, "b", array.Get(1).String())
+	assert.Equal(t, "a", array.Get(0).Str())
+	assert.Equal(t, "b", array.Get(1).Str())
 
 	// Array length
 	assert.Equal(t, 2, array.Len())
@@ -64,8 +64,8 @@ func TestJSONArray(t *testing.T) {
 	assert.NilError(t, err)
 
 	// Item values
-	assert.Equal(t, true, array.Get(0).Boolean())
-	assert.Equal(t, false, array.Get(1).Boolean())
+	assert.Equal(t, true, array.Get(0).Bool())
+	assert.Equal(t, false, array.Get(1).Bool())
 
 	// Array length
 	assert.Equal(t, 2, array.Len())

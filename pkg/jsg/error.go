@@ -8,7 +8,14 @@ const (
 
 func newError(serr string) Node {
 	return &node{
-		nodeType: Error,
-		value:    errors.New(serr),
+		value: errors.New(serr),
 	}
+}
+
+func (n node) Err() error {
+	if e, ok := n.value.(error); ok {
+		return e
+	}
+
+	return nil
 }

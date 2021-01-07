@@ -23,8 +23,7 @@ const (
 )
 
 type node struct {
-	nodeType Type
-	value    interface{}
+	value interface{}
 }
 
 type object = map[string]interface{}
@@ -34,8 +33,9 @@ type array = []interface{}
 type Node interface {
 	Type() Type
 	Get(path interface{}) Node
-	String() string
-	Number() float64
-	Boolean() bool
+	Str() string
+	Num() float64
+	Bool() bool
 	Len() int
+	Err() error
 }

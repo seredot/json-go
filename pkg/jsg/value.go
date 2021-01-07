@@ -3,28 +3,16 @@ package jsg
 import "fmt"
 
 func newValue(v interface{}) Node {
-	var nodeType Type
-
-	switch v.(type) {
-	case float64:
-		nodeType = Number
-	case string:
-		nodeType = String
-	case bool:
-		nodeType = Boolean
-	}
-
 	return &node{
-		nodeType: nodeType,
-		value:    v,
+		value: v,
 	}
 }
 
-func (n node) String() string {
+func (n node) Str() string {
 	return fmt.Sprint(n.value)
 }
 
-func (n node) Number() float64 {
+func (n node) Num() float64 {
 	if num, ok := n.value.(float64); ok {
 		return num
 	}
@@ -32,7 +20,7 @@ func (n node) Number() float64 {
 	return 0
 }
 
-func (n node) Boolean() bool {
+func (n node) Bool() bool {
 	if b, ok := n.value.(bool); ok {
 		return b
 	}

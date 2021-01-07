@@ -16,19 +16,19 @@ json := byte[](`{
 john := jsg.New(json)
 
 // Get values from fields
-name := john.Get("name").String() // "John Doe"
+name := john.Get("name").Str() // "John Doe"
 age := john.Get("age").Int()      // 37
-daughtersName := john.Get("children").At(0).Get("name").String() // "Irene"
+daughtersName := john.Get("children").At(0).Get("name").Str() // "Irene"
 
 // Or use paths
-daughtersName := john.Get("children", 0, "name").String() // "Irene"
+daughtersName := john.Get("children", 0, "name").Str() // "Irene"
 
 // Get an array
-children := john.get("children")
+children := john.Get("children")
 
 // Invalid paths return empty values safely
-sonsName := children.Get(5).Get("name").String() // ""
-sonsName = children.Get(5, "name").String() // ""
+sonsName := children.Get(5).Get("name").Str() // ""
+sonsName = children.Get(5, "name").Str() // ""
 
 // Check for errors
 err := children.Get(5).Get("name").Err() // "index out of bounds"
@@ -58,3 +58,5 @@ length := children.Len()
 // Serialize back to JSON string
 output := string(dt.SerializeIndent("\t"))
 ```
+
+License: MIT
