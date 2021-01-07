@@ -1,14 +1,16 @@
 package jsg
 
-import "errors"
-
 const (
-	errorPathParamType = "path must be string or integer"
+	errorPathParamType            = "path params must be string or integer"
+	errorPathNotFound             = "path element not found: '%v'"
+	errorIntegerKeyUsedOnNonArray = "integer key used on non-array of type: %T, index: %v"
+	errorStringKeyUsedOnNonObject = "string key used on non-object of type: %T, key: '%v'"
+	errorArrayIndexOutOfBounds    = "array index put of bounds: index %d of length: %d"
 )
 
-func newError(serr string) Node {
+func newError(err error) Node {
 	return &node{
-		value: errors.New(serr),
+		value: err,
 	}
 }
 

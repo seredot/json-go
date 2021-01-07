@@ -2,6 +2,7 @@ package jsg
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // NewObject returns a new json-go node with object type.
@@ -49,24 +50,42 @@ func (n node) Type() Type {
 		return Error
 	}
 
-	return Undefined
+	return Invalid
 }
 
-func (n node) Get(p interface{}) Node {
-	switch k := p.(type) {
-	case int: // Array item index
-		if a, ok := n.value.(array); ok {
-			return newValue(a[k])
+func (n node) Get(p ...interface{}) Node {
+	val := n.value
+
+	for _, key := range p {
+		switch k := key.(type) {
+		case int: // Array item index
+			if a, ok := val.(array); ok {
+				if k >= 0 && k < len(a) {
+					val = a[k]
+					continue
+				}
+
+				return newError(fmt.Errorf(errorArrayIndexOutOfBounds, k, len(a)))
+			}
+
+			return newError(fmt.Errorf(errorIntegerKeyUsedOnNonArray, val, key))
+		case string: // Object field key
+			if m, ok := val.(object); ok {
+				if next, exists := m[k]; exists {
+					val = next
+					continue
+				}
+
+				return newError(fmt.Errorf(errorPathNotFound, key))
+			}
+
+			return newError(fmt.Errorf(errorStringKeyUsedOnNonObject, val, key))
+		default:
+			return newError(fmt.Errorf(errorPathParamType))
 		}
-	case string: // Object field key
-		if m, ok := n.value.(object); ok {
-			return newValue(m[k])
-		}
-	default:
-		return newError(errorPathParamType)
 	}
 
-	return nil
+	return newValue(val)
 }
 
 func (n node) Len() int {

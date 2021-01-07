@@ -70,3 +70,45 @@ func TestJSONArray(t *testing.T) {
 	// Array length
 	assert.Equal(t, 2, array.Len())
 }
+
+func TestPath(t *testing.T) {
+	node, err := New([]byte(`{
+		"foo": {
+			"bar": [
+				{ "x": "a" },
+				{ "x": "b" }
+			]
+		}
+	}`))
+
+	// Parsing
+	assert.NilError(t, err)
+
+	// Path works with object and array
+	assert.Equal(t, "a", node.Get("foo", "bar", 0, "x").Str())
+	assert.Equal(t, "b", node.Get("foo", "bar", 1, "x").Str())
+
+	// Invalid path returns error node
+	invalidPath := node.Get("where", "is", "this")
+	assert.Equal(t, Error, invalidPath.Type())
+	assert.Error(t, invalidPath.Err(), "path element not found: 'where'")
+
+	// Passing a string key on an array node returns error node
+	invalidStringKey := node.Get("foo", "bar", "buzz")
+	assert.Equal(t, Error, invalidStringKey.Type())
+	assert.Error(t, invalidStringKey.Err(), "string key used on non-object of type: []interface {}, key: 'buzz'")
+
+	// Passing an integer key on an object node returns error node
+	invalidIntegerKey := node.Get("foo", 0)
+	assert.Equal(t, Error, invalidIntegerKey.Type())
+	assert.Error(t, invalidIntegerKey.Err(), "integer key used on non-array of type: map[string]interface {}, index: 0")
+
+	// Index out of bounds for array
+	indexOutOfBounds := node.Get("foo", "bar", -1, "x")
+	assert.Equal(t, Error, indexOutOfBounds.Type())
+	assert.Error(t, indexOutOfBounds.Err(), "array index put of bounds: index -1 of length: 2")
+	indexOutOfBounds = node.Get("foo", "bar", 2, "x")
+	assert.Equal(t, Error, indexOutOfBounds.Type())
+	assert.Error(t, indexOutOfBounds.Err(), "array index put of bounds: index 2 of length: 2")
+
+}

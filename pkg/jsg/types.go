@@ -20,6 +20,8 @@ const (
 	Array
 	// Error indicates a json-go error node.
 	Error
+	// Invalid indicates the type can not be recognized.
+	Invalid
 )
 
 type node struct {
@@ -32,7 +34,7 @@ type array = []interface{}
 // Node implements a json-go node.
 type Node interface {
 	Type() Type
-	Get(path interface{}) Node
+	Get(path ...interface{}) Node
 	Str() string
 	Num() float64
 	Bool() bool
