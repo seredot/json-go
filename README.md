@@ -27,11 +27,11 @@ daughtersName := john.Get("children", 0, "name").String() // "Irene"
 children := john.get("children")
 
 // Invalid paths return empty values safely
-sonsName := children.At(5).Get("name").String() // ""
+sonsName := children.Get(5).Get("name").String() // ""
 sonsName = children.Get(5, "name").String() // ""
 
 // Check for errors
-err := children.At(5).Get("name").Err() // "index out of bounds"
+err := children.Get(5).Get("name").Err() // "index out of bounds"
 err = children.Get(5, "name").Err() // "index out of bounds"
 
 // Check for types

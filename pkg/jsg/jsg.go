@@ -41,6 +41,9 @@ func (n node) Type() Type {
 func (n node) Get(p interface{}) Node {
 	switch k := p.(type) {
 	case int: // Array item index
+		if a, ok := n.value.(array); ok {
+			return newValue(a[k])
+		}
 	case string: // Object field key
 		if m, ok := n.value.(object); ok {
 			return newValue(m[k])
@@ -50,4 +53,12 @@ func (n node) Get(p interface{}) Node {
 	}
 
 	return nil
+}
+
+func (n node) Len() int {
+	if a, ok := n.value.(array); ok {
+		return len(a)
+	}
+
+	return 0
 }

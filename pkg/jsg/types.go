@@ -37,4 +37,5 @@ type Node interface {
 	String() string
 	Number() float64
 	Boolean() bool
+	Len() int
 }
