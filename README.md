@@ -17,7 +17,7 @@ john := jsg.New(json)
 
 // Get values from fields
 name := john.Get("name").String() // "John Doe"
-age := john.Get("age").Int()      // 38 
+age := john.Get("age").Int()      // 37
 daughtersName := john.Get("children").At(0).Get("name").String() // "Irene"
 
 // Or use paths
@@ -28,11 +28,11 @@ children := john.get("children")
 
 // Invalid paths return empty values safely
 sonsName := children.At(5).Get("name").String() // ""
-sonsName := children.Get(5, "name").String() // ""
+sonsName = children.Get(5, "name").String() // ""
 
 // Check for errors
 err := children.At(5).Get("name").Err() // "index out of bounds"
-err := children.Get(5, "name").Err() // "index out of bounds"
+err = children.Get(5, "name").Err() // "index out of bounds"
 
 // Check for types
 isArray := children.Type() == jsg.Array

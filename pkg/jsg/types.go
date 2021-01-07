@@ -27,11 +27,14 @@ type node struct {
 	value    interface{}
 }
 
-type object map[string]interface{}
-type array []interface{}
+type object = map[string]interface{}
+type array = []interface{}
 
 // Node implements a json-go node.
 type Node interface {
 	Type() Type
-	Get(path string) Node
+	Get(path interface{}) Node
+	String() string
+	Number() float64
+	Boolean() bool
 }
