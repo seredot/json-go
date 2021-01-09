@@ -1,6 +1,15 @@
-# JSON-GO  ********* WIP *********
+# JSON-Go  ********* WIP *********
 
 Go Library for reading, writing, modifying JSON like data.
+
+## How it works
+
+JSON-Go parses a JSON into an empty interface and wraps it around a tiny struct that implements simple functions for accessing and modifying the data structure. Values, types, and errors can be accessed safely without writing type assertions. The library uses the standard Go `json` package and designed to have minimal extra heap allocation for the functionality.
+
+## To do
+- Setters
+- Deletion
+- Serialization
 
 ```go
 json := byte[](`{
@@ -42,21 +51,31 @@ isNull := john.Get("toys").Type() == jsg.Null // true
 isNull = john.Get("toys").Raw() == nil // true
 
 // Set a primitive field
-john.Set("age", 38)
-john.Set("spouse", "Jane Doe")
+john.Set("age", 38) // updates
+john.Set("spouse", "Jane Doe") // creates
 
-// Create object and set field it's fields
+// Create an object
 parents := john.Set("parents", jsg.NewObject())
+
+// Set object fields
 parents.Set("father", "Mark")
 parents.Set("mother", "Rosetta")
 parents.Set("married", true)
 
-// Add an item to an array
-baby := children.Push(jsg.NewObject())
-baby.Set("name", "Ada")
+// Create an array
+toys := john.Set("toys", jsg.NewArray())
 
 // Get the length of an array
 length := children.Len()
+
+// Add an item to an array
+toys.Set(toys.Len(), "keyboard")
+
+// Delete an array item
+toys.Del(0)
+
+// Delete an object field
+john.Del("toys")
 
 // Serialize back to JSON string
 output := string(dt.SerializeIndent("\t"))
