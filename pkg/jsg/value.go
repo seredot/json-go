@@ -9,6 +9,11 @@ func newValue(v interface{}) Node {
 }
 
 func (n node) Str() string {
+	v := n.value
+	if v == nil {
+		return ""
+	}
+
 	return fmt.Sprint(n.value)
 }
 

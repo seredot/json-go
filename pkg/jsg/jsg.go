@@ -88,6 +88,10 @@ func (n node) Get(p ...interface{}) Node {
 	return newValue(val)
 }
 
+func (n node) Raw() interface{} {
+	return n.value
+}
+
 func (n node) Len() int {
 	if a, ok := n.value.(array); ok {
 		return len(a)

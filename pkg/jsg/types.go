@@ -40,4 +40,5 @@ type Node interface {
 	Bool() bool
 	Len() int
 	Err() error
+	Raw() interface{}
 }

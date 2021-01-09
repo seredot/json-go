@@ -112,3 +112,32 @@ func TestPath(t *testing.T) {
 	assert.Error(t, indexOutOfBounds.Err(), "array index put of bounds: index 2 of length: 2")
 
 }
+
+func TestNull(t *testing.T) {
+	json, err := New([]byte(`{ "foo": null }`))
+
+	// Parsing
+	assert.NilError(t, err)
+
+	// Get the null node
+	nullNode := json.Get("foo")
+
+	// Check null value
+	assert.Equal(t, nil, nullNode.Raw())
+
+	// Check null type
+	assert.Equal(t, Null, nullNode.Type())
+
+	// Null defaults to empty string
+	assert.Equal(t, "", nullNode.Str())
+
+	// Null defaults to number zero
+	assert.Equal(t, 0.0, nullNode.Num())
+
+	// Null defaults to boolean false
+	assert.Equal(t, false, nullNode.Bool())
+
+	// Accessing a path under null value returns an error node
+	assert.Equal(t, Error, nullNode.Get("bar").Type())
+	assert.Error(t, nullNode.Get("bar").Err(), "string key used on non-object of type: <nil>, key: 'bar'")
+}
