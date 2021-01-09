@@ -139,5 +139,21 @@ func TestNull(t *testing.T) {
 
 	// Accessing a path under null value returns an error node
 	assert.Equal(t, Error, nullNode.Get("bar").Type())
-	assert.Error(t, nullNode.Get("bar").Err(), "string key used on non-object of type: <nil>, key: 'bar'")
+	assert.ErrorContains(t, nullNode.Get("bar").Err(), "string key used on non-object of type: ")
+}
+
+func TestUndefined(t *testing.T) {
+	json, err := New([]byte(`{ "foo": 1 }`))
+
+	// Parsing
+	assert.NilError(t, err)
+
+	// Get the undefined node
+	nullNode := json.Get("bar")
+
+	// Undefined field returns error node
+	assert.Equal(t, Error, nullNode.Type())
+
+	// Check the error message
+	assert.ErrorContains(t, nullNode.Err(), "path element not found: ")
 }

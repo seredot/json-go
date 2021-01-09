@@ -4,10 +4,8 @@ package jsg
 type Type int
 
 const (
-	// Undefined indicates a json-go undefined node.
-	Undefined Type = iota
 	// Null indicates a json-go null node.
-	Null
+	Null Type = iota
 	// String indicates a json-go string node.
 	String
 	// Number indicates a json-go number node.
