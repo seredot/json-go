@@ -5,7 +5,7 @@ const (
 	errorPathNotFound             = "path element not found: '%v'"
 	errorIntegerKeyUsedOnNonArray = "integer key used on non-array of type: %T, index: %v"
 	errorStringKeyUsedOnNonObject = "string key used on non-object of type: %T, key: '%v'"
-	errorArrayIndexOutOfBounds    = "array index put of bounds: index %d of length: %d"
+	errorArrayIndexOutOfBounds    = "array index out of bounds: index %d of length: %d"
 )
 
 func newError(err error) Node {

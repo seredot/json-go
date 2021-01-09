@@ -6,6 +6,7 @@ Go Library for reading, writing, modifying JSON like data.
 json := byte[](`{
     "name": "John Doe",
     "age": 37,
+    "toys": null,
     "children": [
         {"name": "Irene"},
         {"name": "Alan"}
@@ -31,12 +32,14 @@ sonsName := children.Get(5).Get("name").Str() // ""
 sonsName = children.Get(5, "name").Str() // ""
 
 // Check for errors
-err := children.Get(5).Get("name").Err() // "index out of bounds"
-err = children.Get(5, "name").Err() // "index out of bounds"
+err := children.Get(5).Get("name").Err() // "array index out of bounds"
+err = children.Get(5, "name").Err() // "array index out of bounds"
 
 // Check for types
-isArray := children.Type() == jsg.Array
-isNumber := john.Get("age").Type() == jsg.Number
+isArray := children.Type() == jsg.Array // true
+isNumber := john.Get("age").Type() == jsg.Number // true
+isNull := john.Get("toys").Type() == jsg.Null // true
+isNull = john.Get("toys").Raw() == nil // true
 
 // Set a primitive field
 john.Set("age", 38)

@@ -1,6 +1,7 @@
 package jsg
 
 import (
+	"fmt"
 	"testing"
 
 	"gotest.tools/assert"
@@ -106,10 +107,10 @@ func TestPath(t *testing.T) {
 	// Index out of bounds for array
 	indexOutOfBounds := node.Get("foo", "bar", -1, "x")
 	assert.Equal(t, Error, indexOutOfBounds.Type())
-	assert.Error(t, indexOutOfBounds.Err(), "array index put of bounds: index -1 of length: 2")
+	assert.Error(t, indexOutOfBounds.Err(), "array index out of bounds: index -1 of length: 2")
 	indexOutOfBounds = node.Get("foo", "bar", 2, "x")
 	assert.Equal(t, Error, indexOutOfBounds.Type())
-	assert.Error(t, indexOutOfBounds.Err(), "array index put of bounds: index 2 of length: 2")
+	assert.Error(t, indexOutOfBounds.Err(), "array index out of bounds: index 2 of length: 2")
 
 }
 
@@ -156,4 +157,30 @@ func TestUndefined(t *testing.T) {
 
 	// Check the error message
 	assert.ErrorContains(t, nullNode.Err(), "path element not found: ")
+}
+
+func TestError(t *testing.T) {
+	json, err := New([]byte(`{}`))
+
+	// Parsing
+	assert.NilError(t, err)
+
+	// Get the error node
+	errorNode := json.Get("foo")
+
+	// Undefined field returns error node
+	assert.Equal(t, Error, errorNode.Type())
+
+	// Error defaults to empty string
+	assert.Equal(t, "", errorNode.Str())
+
+	// Error defaults to number zero
+	assert.Equal(t, 0.0, errorNode.Num())
+
+	// Error defaults to boolean false
+	assert.Equal(t, false, errorNode.Bool())
+
+	// Error message
+	assert.ErrorContains(t, errorNode.Err(), "path element not found: ")
+	assert.Error(t, fmt.Errorf("path element not found: 'foo'"), errorNode.Raw().(error).Error())
 }

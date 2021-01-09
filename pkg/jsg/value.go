@@ -10,7 +10,12 @@ func newValue(v interface{}) Node {
 
 func (n node) Str() string {
 	v := n.value
+
 	if v == nil {
+		return ""
+	}
+
+	if _, ok := v.(error); ok {
 		return ""
 	}
 
