@@ -6,28 +6,28 @@ import (
 )
 
 // NewObject returns a new json-go node with object type.
-func NewObject() Node {
-	return &node{
+func NewObject() *Node {
+	return &Node{
 		value: object{},
 	}
 }
 
 // NewArray returns a new json-go node with array type.
-func NewArray() Node {
-	return &node{
+func NewArray() *Node {
+	return &Node{
 		value: array{},
 	}
 }
 
 // New returns the root node for given JSON bytes.
-func New(jsonBytes []byte) (Node, error) {
+func New(jsonBytes []byte) (*Node, error) {
 	var value interface{}
 	err := json.Unmarshal(jsonBytes, &value)
 	if err != nil {
 		return nil, err
 	}
 
-	return &node{
+	return &Node{
 		value: value,
 	}, nil
 }
@@ -53,11 +53,13 @@ func typeOf(v interface{}) Type {
 	return Invalid
 }
 
-func (n node) Type() Type {
+// Type returns the type of the node.
+func (n Node) Type() Type {
 	return typeOf(n.value)
 }
 
-func (n node) Get(p ...interface{}) Node {
+// TODO: doc
+func (n Node) Get(p ...interface{}) *Node {
 	val := n.value
 
 	for _, key := range p {
@@ -92,7 +94,8 @@ func (n node) Get(p ...interface{}) Node {
 	return newValue(val)
 }
 
-func (n *node) Set(key interface{}, val interface{}) error {
+// TODO: doc
+func (n *Node) Set(key interface{}, val interface{}) error {
 	t := typeOf(val)
 
 	if t == Invalid || t == Error {
@@ -130,11 +133,8 @@ func (n *node) Set(key interface{}, val interface{}) error {
 	}
 }
 
-func (n node) Raw() interface{} {
-	return n.value
-}
-
-func (n node) Len() int {
+// Len returns the length of the array. If the node type is not Array returns 0.
+func (n Node) Len() int {
 	if a, ok := n.value.(array); ok {
 		return len(a)
 	}
@@ -142,7 +142,11 @@ func (n node) Len() int {
 	return 0
 }
 
-func (n *node) Del(key interface{}) error {
+// Del deletes from Object or Array.
+// If the node type is Object, deletes given string key from the object. If the key is not present Del is no-op.
+// If the node type is Array, deletes given integer index from the array. Given index must be inside array bounds.
+// Otherwise returns an error.
+func (n *Node) Del(key interface{}) error {
 	switch k := key.(type) {
 	case string:
 		if o, ok := n.value.(object); ok {
@@ -171,3 +175,11 @@ func (n *node) Del(key interface{}) error {
 		return fmt.Errorf(errorPathParamType)
 	}
 }
+
+// Raw returns the raw value from the JSON parser. Valid types: nil, string, float64, bool, map[string]interface{}, []interface{}.
+func (n Node) Raw() interface{} {
+	return n.value
+}
+
+// SerializeIndent(indent string) []btye
+// Serialize() []btye

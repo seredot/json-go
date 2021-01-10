@@ -9,13 +9,14 @@ const (
 	errorInvalidType              = "invalid type, must be one of string, float64, bool, map[string]interface{}, []interface{}, null"
 )
 
-func newError(err error) Node {
-	return &node{
+func newError(err error) *Node {
+	return &Node{
 		value: err,
 	}
 }
 
-func (n node) Err() error {
+// Err returns the error if the node type is Error. Otherwise nil.
+func (n Node) Err() error {
 	if e, ok := n.value.(error); ok {
 		return e
 	}

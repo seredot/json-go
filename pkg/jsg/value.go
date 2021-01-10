@@ -2,13 +2,14 @@ package jsg
 
 import "fmt"
 
-func newValue(v interface{}) Node {
-	return &node{
+func newValue(v interface{}) *Node {
+	return &Node{
 		value: v,
 	}
 }
 
-func (n node) Str() string {
+// Str returns the string value. If the value is null or node type is not String, returns an empty string.
+func (n Node) Str() string {
 	v := n.value
 
 	if v == nil {
@@ -22,7 +23,8 @@ func (n node) Str() string {
 	return fmt.Sprint(n.value)
 }
 
-func (n node) Num() float64 {
+// Num returns the floating point value. If the value is null or node type is not Number, returns 0.
+func (n Node) Num() float64 {
 	if num, ok := n.value.(float64); ok {
 		return num
 	}
@@ -30,7 +32,8 @@ func (n node) Num() float64 {
 	return 0
 }
 
-func (n node) Bool() bool {
+// Bool returns the bool value. If the value is null or node type is not Boolean, returns false.
+func (n Node) Bool() bool {
 	if b, ok := n.value.(bool); ok {
 		return b
 	}

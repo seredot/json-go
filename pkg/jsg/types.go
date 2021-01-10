@@ -22,25 +22,10 @@ const (
 	Invalid
 )
 
-type node struct {
+// TODO: doc
+type Node struct {
 	value interface{}
 }
 
 type object = map[string]interface{}
 type array = []interface{}
-
-// Node implements a json-go node.
-type Node interface {
-	Type() Type
-	Get(path ...interface{}) Node
-	Set(key interface{}, val interface{}) error
-	Del(key interface{}) error
-	Str() string
-	Num() float64
-	Bool() bool
-	Len() int
-	Err() error
-	Raw() interface{}
-	// SerializeIndent(indent string) []btye
-	// Serialize() []btye
-}
