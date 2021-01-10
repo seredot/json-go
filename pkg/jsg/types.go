@@ -33,10 +33,14 @@ type array = []interface{}
 type Node interface {
 	Type() Type
 	Get(path ...interface{}) Node
+	Set(key interface{}, val interface{}) error
+	// Del(key string)
 	Str() string
 	Num() float64
 	Bool() bool
 	Len() int
 	Err() error
 	Raw() interface{}
+	// SerializeIndent(indent string) []btye
+	// Serialize() []btye
 }

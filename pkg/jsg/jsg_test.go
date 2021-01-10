@@ -111,7 +111,6 @@ func TestPath(t *testing.T) {
 	indexOutOfBounds = node.Get("foo", "bar", 2, "x")
 	assert.Equal(t, Error, indexOutOfBounds.Type())
 	assert.Error(t, indexOutOfBounds.Err(), "array index out of bounds: index 2 of length: 2")
-
 }
 
 func TestNull(t *testing.T) {
@@ -183,4 +182,44 @@ func TestError(t *testing.T) {
 	// Error message
 	assert.ErrorContains(t, errorNode.Err(), "path element not found: ")
 	assert.Error(t, fmt.Errorf("path element not found: 'foo'"), errorNode.Raw().(error).Error())
+
+	// Set using an invalid type (int here)
+	err = NewObject().Set("foo", 1)
+	assert.Error(t, err, errorInvalidType)
+
+	// Set object field with an array index key
+	err = NewObject().Set(0, "foo")
+	assert.ErrorContains(t, err, "integer key used on non-array of type:")
+
+	// Set array item with a string key
+	err = NewArray().Set("foo", "bar")
+	assert.ErrorContains(t, err, "string key used on non-object of type:")
+
+	// Set using an invalid key type (other than string or int)
+	err = NewObject().Set(false, "bar")
+	assert.ErrorContains(t, err, "path params must be string or integer")
+}
+
+func TestSet(t *testing.T) {
+	// Create a new object
+	root := NewObject()
+
+	// Use the setter
+	root.Set("foo", "bar")
+
+	// Read back the value
+	assert.Equal(t, "bar", root.Get("foo").Str())
+
+	// Create a new object
+	array := NewArray()
+
+	// Use the setter
+	array.Set(2, "fun")
+	array.Set(1, "is")
+	array.Set(0, "go")
+
+	// Read back the value
+	assert.Equal(t, "go", array.Get(0).Str())
+	assert.Equal(t, "is", array.Get(1).Str())
+	assert.Equal(t, "fun", array.Get(2).Str())
 }
