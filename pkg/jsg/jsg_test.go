@@ -186,18 +186,6 @@ func TestError(t *testing.T) {
 	// Set using an invalid type (int here)
 	err = NewObject().Set("foo", 1)
 	assert.Error(t, err, errorInvalidType)
-
-	// Set object field with an array index key
-	err = NewObject().Set(0, "foo")
-	assert.ErrorContains(t, err, "integer key used on non-array of type:")
-
-	// Set array item with a string key
-	err = NewArray().Set("foo", "bar")
-	assert.ErrorContains(t, err, "string key used on non-object of type:")
-
-	// Set using an invalid key type (other than string or int)
-	err = NewObject().Set(false, "bar")
-	assert.ErrorContains(t, err, "path params must be string or integer")
 }
 
 func TestSet(t *testing.T) {
@@ -218,8 +206,59 @@ func TestSet(t *testing.T) {
 	array.Set(1, "is")
 	array.Set(0, "go")
 
-	// Read back the value
+	// Read back values
 	assert.Equal(t, "go", array.Get(0).Str())
 	assert.Equal(t, "is", array.Get(1).Str())
 	assert.Equal(t, "fun", array.Get(2).Str())
+
+	// Set object field with an array index key
+	err := NewObject().Set(0, "foo")
+	assert.ErrorContains(t, err, "integer key used on non-array of type:")
+
+	// Set array item with a string key
+	err = NewArray().Set("foo", "bar")
+	assert.ErrorContains(t, err, "string key used on non-object of type:")
+
+	// Set array item with a negative index
+	err = NewArray().Set(-1, "bar")
+	assert.ErrorContains(t, err, "array index out of bounds: index -1")
+
+	// Set using an invalid key type (other than string or int)
+	err = NewObject().Set(false, "bar")
+	assert.ErrorContains(t, err, "path params must be string or integer")
+}
+
+func TestDel(t *testing.T) {
+	object := NewObject()
+	object.Set("foo", "bar")
+
+	// Delete key from object
+	err := object.Del("foo")
+	assert.NilError(t, err)
+
+	// Deleted field should return error node
+	assert.Equal(t, Error, object.Get("foo").Type())
+
+	array := NewArray()
+	array.Set(0, 1.0)
+	array.Set(1, 2.0)
+	array.Set(2, 3.0)
+
+	// Delete first item from array
+	err = array.Del(0)
+	assert.NilError(t, err)
+
+	// Delete the last item
+	err = array.Del(array.Len() - 1)
+	assert.NilError(t, err)
+
+	// There should be 1 item left
+	assert.Equal(t, 1, array.Len())
+	assert.Equal(t, 2.0, array.Get(0).Num())
+
+	// Deleted negative index return error node
+	assert.ErrorContains(t, array.Del(-1), "array index out of bounds: index -1")
+
+	// Deleted out of bounds index return error node
+	assert.ErrorContains(t, array.Del(10), "array index out of bounds: index 10")
 }

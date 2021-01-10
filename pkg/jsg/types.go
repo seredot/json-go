@@ -34,7 +34,7 @@ type Node interface {
 	Type() Type
 	Get(path ...interface{}) Node
 	Set(key interface{}, val interface{}) error
-	// Del(key string)
+	Del(key interface{}) error
 	Str() string
 	Num() float64
 	Bool() bool

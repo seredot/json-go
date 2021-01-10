@@ -7,7 +7,6 @@ Go Library for reading, writing, modifying JSON like data.
 JSON-Go parses a JSON into an empty interface and wraps it around a tiny struct that implements simple functions for accessing and modifying the data structure. Values, types, and errors can be accessed safely without writing type assertions. The library uses the standard Go `json` package and designed to have minimal extra heap allocation for the functionality.
 
 ## To do
-- Deletion
 - Serialization
 
 ```go

@@ -110,7 +110,9 @@ func (n *node) Set(key interface{}, val interface{}) error {
 		return fmt.Errorf(errorStringKeyUsedOnNonObject, val, key)
 	case int:
 		if a, ok := n.value.(array); ok {
-			if k >= len(a) {
+			if k < 0 {
+				return fmt.Errorf(errorArrayIndexOutOfBounds, k, len(a))
+			} else if k >= len(a) {
 				n.value = make(array, k+1)
 				dest := n.value.(array)
 				_ = copy(dest, a)
@@ -138,4 +140,34 @@ func (n node) Len() int {
 	}
 
 	return 0
+}
+
+func (n *node) Del(key interface{}) error {
+	switch k := key.(type) {
+	case string:
+		if o, ok := n.value.(object); ok {
+			delete(o, k)
+
+			return nil
+		}
+
+		return fmt.Errorf(errorStringKeyUsedOnNonObject, n.value, key)
+	case int:
+		if a, ok := n.value.(array); ok {
+			if k < 0 {
+				return fmt.Errorf(errorArrayIndexOutOfBounds, k, len(a))
+			} else if k >= len(a) {
+				return fmt.Errorf(errorArrayIndexOutOfBounds, k, len(a))
+			}
+
+			copy(a[k:], a[k+1:])
+			n.value = a[:len(a)-1]
+
+			return nil
+		}
+
+		return fmt.Errorf(errorIntegerKeyUsedOnNonArray, n.value, key)
+	default:
+		return fmt.Errorf(errorPathParamType)
+	}
 }
