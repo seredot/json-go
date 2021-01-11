@@ -5,6 +5,19 @@ import (
 	"fmt"
 )
 
+// New returns the root node for given JSON bytes.
+func New(jsonBytes []byte) (*Node, error) {
+	var value interface{}
+	err := json.Unmarshal(jsonBytes, &value)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Node{
+		value: value,
+	}, nil
+}
+
 // NewObject returns a new json-go node with object type.
 func NewObject() *Node {
 	return &Node{
@@ -19,17 +32,16 @@ func NewArray() *Node {
 	}
 }
 
-// New returns the root node for given JSON bytes.
-func New(jsonBytes []byte) (*Node, error) {
-	var value interface{}
-	err := json.Unmarshal(jsonBytes, &value)
-	if err != nil {
-		return nil, err
-	}
-
+func newValue(v interface{}) *Node {
 	return &Node{
-		value: value,
-	}, nil
+		value: v,
+	}
+}
+
+func newError(err error) *Node {
+	return &Node{
+		value: err,
+	}
 }
 
 func typeOf(v interface{}) Type {
@@ -176,9 +188,51 @@ func (n *Node) Del(key interface{}) error {
 	}
 }
 
+// Str returns the string value. If the value is null or node type is not String, returns an empty string.
+func (n Node) Str() string {
+	v := n.value
+
+	if v == nil {
+		return ""
+	}
+
+	if _, ok := v.(error); ok {
+		return ""
+	}
+
+	return fmt.Sprint(n.value)
+}
+
+// Num returns the floating point value. If the value is null or node type is not Number, returns 0.
+func (n Node) Num() float64 {
+	if num, ok := n.value.(float64); ok {
+		return num
+	}
+
+	return 0
+}
+
+// Bool returns the bool value. If the value is null or node type is not Boolean, returns false.
+func (n Node) Bool() bool {
+	if b, ok := n.value.(bool); ok {
+		return b
+	}
+
+	return false
+}
+
 // Raw returns the raw value from the JSON parser. Valid types: nil, string, float64, bool, map[string]interface{}, []interface{}.
 func (n Node) Raw() interface{} {
 	return n.value
+}
+
+// Err returns the error if the node type is Error. Otherwise nil.
+func (n Node) Err() error {
+	if e, ok := n.value.(error); ok {
+		return e
+	}
+
+	return nil
 }
 
 // SerializeIndent(indent string) []btye

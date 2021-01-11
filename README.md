@@ -8,6 +8,9 @@ JSON-Go parses a JSON into an empty interface and wraps it around a tiny struct 
 
 ## To do
 - Serialization
+- Missing method docs
+- Overview
+- Examples
 
 ```go
 json := byte[](`{
