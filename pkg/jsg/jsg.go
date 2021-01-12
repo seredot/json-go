@@ -189,18 +189,13 @@ func (n *Node) Del(key interface{}) error {
 }
 
 // Str returns the string value. If the value is null or node type is not String, returns an empty string.
+// TODO: strict string check
 func (n Node) Str() string {
-	v := n.value
-
-	if v == nil {
-		return ""
+	if str, ok := n.value.(string); ok {
+		return str
 	}
 
-	if _, ok := v.(error); ok {
-		return ""
-	}
-
-	return fmt.Sprint(n.value)
+	return ""
 }
 
 // Num returns the floating point value. If the value is null or node type is not Number, returns 0.
