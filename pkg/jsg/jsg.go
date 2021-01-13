@@ -70,7 +70,11 @@ func (n Node) Type() Type {
 	return typeOf(n.value)
 }
 
-// TODO: doc
+// Get returns a child node in the node tree. p is the list of keys in the path.
+// Keys can be either string or int typed.
+// string keys can only be used in Object nodes and returns the child node for the key.
+// int keys can only be used in Array nodes and returns the child node for the index.
+// Example: root.Get("users", 1) returns the second user in users array.
 func (n Node) Get(p ...interface{}) *Node {
 	val := n.value
 
@@ -106,7 +110,14 @@ func (n Node) Get(p ...interface{}) *Node {
 	return newValue(val)
 }
 
-// TODO: doc
+// Set sets a value in the node.
+// key can be either string or int typed.
+// string key can only be used in Object nodes and sets the value of the property of the object.
+// int keys can only be used in Array nodes and sets the item of the array with the given index.
+// If the length of the array is smaller than the given index, the length of the array is increased
+// and the item value is set to that index. In that case newly created empty item indexes are set
+// to nil.
+// Example: root.Get(users).Set(1, "Jim") returns the second user in users array.
 func (n *Node) Set(key interface{}, val interface{}) error {
 	t := typeOf(val)
 

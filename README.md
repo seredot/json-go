@@ -28,7 +28,7 @@ john := jsg.New(json)
 
 // Get values from fields
 name := john.Get("name").Str() // "John Doe"
-age := john.Get("age").Int() // 37
+age := john.Get("age").Num() // 37.0
 daughtersName := john.Get("children").Get(0).Get("name").Str() // "Irene"
 
 // Or use paths

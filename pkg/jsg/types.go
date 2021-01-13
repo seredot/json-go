@@ -22,7 +22,12 @@ const (
 	Invalid
 )
 
-// TODO: doc
+// Node is a point in the JSON tree that allows travering it's child
+// nodes and getting settings values on them.
+// Example:
+//	rootNode = jsg.New(byte[](`{"foo":"bar"}`))
+// 	fooNode = rootNode.Get("foo")
+//	value = fooNode.Str()
 type Node struct {
 	value interface{}
 }
