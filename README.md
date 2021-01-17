@@ -1,4 +1,4 @@
-# JSON-Go  ********* WIP *********
+# JSON-Go
 
 Go Library for reading, writing, modifying JSON like data.
 
@@ -6,14 +6,10 @@ Go Library for reading, writing, modifying JSON like data.
 
 JSON-Go parses a JSON into an empty interface and wraps it around a tiny struct that implements simple functions for accessing and modifying the data structure. Values, types, and errors can be accessed safely without writing type assertions. The library uses the standard Go `json` package and designed to have minimal extra heap allocation for the functionality.
 
-## To do
-- Serialization
-- Missing method docs
-- Overview
-- Examples
-
 ```go
-json := byte[](`{
+import jsg "github.com/seredot/json-go"
+
+json := []byte(`{
     "name": "John Doe",
     "age": 37,
     "toys": null,
@@ -24,35 +20,35 @@ json := byte[](`{
 }`)
 
 // Get the root node:
-john := jsg.New(json)
+john, _ := jsg.New(json)
 
 // Get values from fields
-name := john.Get("name").Str() // "John Doe"
-age := john.Get("age").Num() // 37.0
-daughtersName := john.Get("children").Get(0).Get("name").Str() // "Irene"
+john.Get("name").Str()                        // "John Doe"
+john.Get("age").Num()                         // 37.0
+john.Get("children").Get(0).Get("name").Str() // "Irene"
 
 // Or use paths
-daughtersName := john.Get("children", 0, "name").Str() // "Irene"
+john.Get("children", 0, "name").Str() // "Irene"
 
 // Get an array
 children := john.Get("children")
 
 // Invalid paths return empty values safely
-sonsName := children.Get(5).Get("name").Str() // ""
-sonsName = children.Get(5, "name").Str() // ""
+children.Get(5).Get("name").Str() // ""
+children.Get(5, "name").Str()     // ""
 
 // Check for errors
-err := children.Get(5).Get("name").Err() // "array index out of bounds"
-err = children.Get(5, "name").Err() // "array index out of bounds"
+children.Get(5).Get("name").Err() // "array index out of bounds"
+children.Get(5, "name").Err()     // "array index out of bounds"
 
 // Check for types
-isArray := children.Type() == jsg.Array // true
+isArray := children.Type() == jsg.Array          // true
 isNumber := john.Get("age").Type() == jsg.Number // true
-isNull := john.Get("toys").Type() == jsg.Null // true
-isNull = john.Get("toys").Raw() == nil // true
+isNull := john.Get("toys").Type() == jsg.Null    // true
+isNull2 := john.Get("toys").Raw() == nil         // true
 
 // Set a primitive field
-john.Set("age", 38) // updates
+john.Set("age", 38)            // updates
 john.Set("spouse", "Jane Doe") // creates
 
 // Create an object
@@ -79,7 +75,9 @@ toys.Del(0)
 john.Del("toys")
 
 // Serialize back to JSON string
-output := string(dt.SerializeIndent("\t"))
+output, _ := john.Serialize("\t")
+
+fmt.Println(string(output))
 ```
 
 License: MIT

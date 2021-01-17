@@ -110,19 +110,18 @@ func (n Node) Get(p ...interface{}) *Node {
 	return newValue(val)
 }
 
-// Set sets a value in the node.
+// Set sets a value in the node and returns the set node.
 // key can be either string or int typed.
 // string key can only be used in Object nodes and sets the value of the property of the object.
 // int keys can only be used in Array nodes and sets the item of the array with the given index.
 // If the length of the array is smaller than the given index, the length of the array is increased
 // and the item value is set to that index. In that case newly created empty item indexes are set
 // to nil.
-// Example: root.Get(users).Set(1, "Jim") returns the second user in users array.
-func (n *Node) Set(key interface{}, val interface{}) error {
+func (n *Node) Set(key interface{}, val interface{}) *Node {
 	t := typeOf(val)
 
 	if t == Invalid || t == Error {
-		return fmt.Errorf(errorInvalidType)
+		return newError(fmt.Errorf(errorInvalidType))
 	}
 
 	switch k := key.(type) {
@@ -130,14 +129,14 @@ func (n *Node) Set(key interface{}, val interface{}) error {
 		if o, ok := n.value.(object); ok {
 			o[k] = val
 
-			return nil
+			return newValue(val)
 		}
 
-		return fmt.Errorf(errorStringKeyUsedOnNonObject, val, key)
+		return newError(fmt.Errorf(errorStringKeyUsedOnNonObject, val, key))
 	case int:
 		if a, ok := n.value.(array); ok {
 			if k < 0 {
-				return fmt.Errorf(errorArrayIndexOutOfBounds, k, len(a))
+				return newError(fmt.Errorf(errorArrayIndexOutOfBounds, k, len(a)))
 			} else if k >= len(a) {
 				n.value = make(array, k+1)
 				dest := n.value.(array)
@@ -147,12 +146,12 @@ func (n *Node) Set(key interface{}, val interface{}) error {
 				a[k] = val
 			}
 
-			return nil
+			return newValue(val)
 		}
 
-		return fmt.Errorf(errorIntegerKeyUsedOnNonArray, val, key)
+		return newError(fmt.Errorf(errorIntegerKeyUsedOnNonArray, val, key))
 	default:
-		return fmt.Errorf(errorPathParamType)
+		return newError(fmt.Errorf(errorPathParamType))
 	}
 }
 
@@ -240,5 +239,7 @@ func (n Node) Err() error {
 	return nil
 }
 
-// SerializeIndent(indent string) []btye
-// Serialize() []btye
+// Serialize converts node to bytes.
+func (n Node) Serialize(indent string) ([]byte, error) {
+	return json.MarshalIndent(n.value, "", indent)
+}
