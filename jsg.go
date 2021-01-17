@@ -200,7 +200,6 @@ func (n *Node) Del(key interface{}) error {
 }
 
 // Str returns the string value. If the value is null or node type is not String, returns an empty string.
-// TODO: strict string check
 func (n Node) Str() string {
 	if str, ok := n.value.(string); ok {
 		return str
