@@ -1,6 +1,6 @@
 # JSON-Go
 
-Go Library for reading, writing, modifying JSON like data.
+JSON library for dynamically reading and modifying JSON like data using keys, paths and values.
 
 ## How it works
 
